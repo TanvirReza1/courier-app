@@ -15,6 +15,7 @@ const router = createBrowserRouter([
       {
         path: "coverage",
         Component: Covaerage,
+        loader: () => fetch("/warehouses.json").then((res) => res.json()),
       },
     ],
   },
