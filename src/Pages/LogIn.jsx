@@ -1,8 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../Hooks/useAuth";
+import { Link, useNavigate } from "react-router";
+import SocialLogIn from "../Auth/SocialLogIn";
+import Swal from "sweetalert2";
 
 const LogIn = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -13,11 +17,23 @@ const LogIn = () => {
   const handleLogIn = (data) => {
     console.log(data);
     logInUser(data.email, data.password)
-      .then((result) => console.log(result.user))
+      .then((result) => {
+        console.log(result.user);
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "LogIn successfull",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/");
+      })
       .catch((error) => console.log(error.message));
   };
   return (
-    <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+    <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl">
+      <h1 className="text-3xl text-center">Welcome Back</h1>
+      <p className="text-center">Please LogIn</p>
       <form onSubmit={handleSubmit(handleLogIn)} className="card-body">
         <fieldset className="fieldset">
           <label className="label">Email</label>
@@ -49,7 +65,14 @@ const LogIn = () => {
           </div>
           <button className="btn btn-neutral mt-4">Login</button>
         </fieldset>
+        <p>
+          New to Zap Shift{" "}
+          <Link className="text-blue-500 underline" to="/register">
+            Register
+          </Link>{" "}
+        </p>
       </form>
+      <SocialLogIn></SocialLogIn>
     </div>
   );
 };
