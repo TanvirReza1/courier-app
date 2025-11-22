@@ -20,8 +20,18 @@ const NavBar = () => {
         <NavLink to="">About Us</NavLink>
       </li>
       <li>
+        <NavLink to="/send-parcel">Send Parcel</NavLink>
+      </li>
+      <li>
         <NavLink to="/coverage">Coverage</NavLink>
       </li>
+      {user && (
+        <>
+          <li>
+            <NavLink to="/dashboard/my-parcels">My Parcel</NavLink>
+          </li>
+        </>
+      )}
     </>
   );
   return (
@@ -69,7 +79,7 @@ const NavBar = () => {
             LogIn
           </Link>
         )}
-        <Link to="/beARider" className="btn btn-primary text-black mx-4 ">
+        <Link to="/rider" className="btn btn-primary text-black mx-4 ">
           Be a Rider
         </Link>
       </div>

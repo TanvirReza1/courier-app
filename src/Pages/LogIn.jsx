@@ -1,12 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../Hooks/useAuth";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogIn from "../Auth/SocialLogIn";
 import Swal from "sweetalert2";
 
 const LogIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const {
     register,
     handleSubmit,
@@ -18,6 +21,8 @@ const LogIn = () => {
     console.log(data);
     logInUser(data.email, data.password)
       .then((result) => {
+        console.log("THEN block running");
+
         console.log(result.user);
         Swal.fire({
           position: "top-end",
@@ -26,7 +31,7 @@ const LogIn = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        navigate("/");
+        navigate(from, { replace: true });
       })
       .catch((error) => console.log(error.message));
   };
@@ -67,7 +72,11 @@ const LogIn = () => {
         </fieldset>
         <p>
           New to Zap Shift{" "}
-          <Link className="text-blue-500 underline" to="/register">
+          <Link
+            state={location.state}
+            className="text-blue-500 underline"
+            to="/register"
+          >
             Register
           </Link>{" "}
         </p>

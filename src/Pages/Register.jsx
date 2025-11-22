@@ -1,14 +1,16 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../Hooks/useAuth";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogIn from "../Auth/SocialLogIn";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 const Register = () => {
   const { registerUser, updateUserProfile } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
   const {
     register,
     handleSubmit,
@@ -32,25 +34,28 @@ const Register = () => {
         }`;
         axios.post(image_api_url, formData).then((res) => {
           // Get the URL from the response
-          console.log("after image upload", res.data.data.url);
+          const imgURL = res.data.data.url;
+          console.log("after image upload", imgURL);
 
           const userProfile = {
             displayName: data.name,
-            photoURL: res.data.data.url,
+            photoURL: imgURL,
           };
           // Save it as the user's photoURL in Firebase
           updateUserProfile(userProfile)
-            .then(() => console.log("user profile updated done"))
+            .then(() => {
+              console.log("user profile updated successfully");
+              Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "register successfull",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              navigate(from, { replace: true });
+            })
             .catch((error) => console.log(error));
         });
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "register successfull",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        navigate("/");
       })
       .catch((error) => console.log(error.message));
   };
@@ -119,7 +124,11 @@ const Register = () => {
         </fieldset>
         <p>
           Already have an account
-          <Link className="text-blue-500 underline" to="/logIn">
+          <Link
+            state={location.state}
+            className="text-blue-500 underline"
+            to="/logIn"
+          >
             LogIn
           </Link>
         </p>
